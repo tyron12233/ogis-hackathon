@@ -80,10 +80,10 @@ const Analysis: React.FC<AnalysisProps> = ({ analysis }) => {
                     <h4 className="section-title">Symbols & possible meanings</h4>
                     <ul className="text-stone-300 space-y-2">
                         {analysis.symbols.map((s, i) => (
-                            <li key={i} className="flex items-start gap-3">
-                                <span className="chip shrink-0 capitalize">{s.symbol}</span>
+                            <li key={i} className="flex items-start gap-3 anim-fade-up" style={{ animationDelay: `${i * 50}ms` }}>
+                                <span className="dot mt-1.5" />
                                 <div className="text-sm">
-                                    <div className="text-stone-200">{s.meaning}</div>
+                                    <div className="text-stone-200"><span className="font-medium capitalize">{s.symbol}</span>: {s.meaning}</div>
                                     {s.evidence && <div className="text-stone-500 mt-0.5 text-xs">{s.evidence}</div>}
                                 </div>
                             </li>
@@ -95,8 +95,13 @@ const Analysis: React.FC<AnalysisProps> = ({ analysis }) => {
             {(analysis.likelyFactors?.length ?? 0) > 0 && (
                 <div className="card p-5 sm:p-6">
                     <h4 className="section-title">What might be influencing this dream</h4>
-                    <ul className="text-stone-300 space-y-1 list-disc pl-6">
-                        {analysis.likelyFactors.map((f, i) => <li key={i}>{f}</li>)}
+                    <ul className="text-stone-300 space-y-2">
+                        {analysis.likelyFactors.map((f, i) => (
+                            <li key={i} className="flex items-start gap-3 anim-fade-up" style={{ animationDelay: `${i * 50}ms` }}>
+                                <span className="dot mt-1.5" />
+                                <span>{f}</span>
+                            </li>
+                        ))}
                     </ul>
                 </div>
             )}
@@ -104,8 +109,13 @@ const Analysis: React.FC<AnalysisProps> = ({ analysis }) => {
             {(analysis.copingStrategies?.length ?? 0) > 0 && (
                 <div className="card p-5 sm:p-6">
                     <h4 className="section-title">Coping strategies</h4>
-                    <ul className="text-stone-300 space-y-1 list-disc pl-6">
-                        {analysis.copingStrategies!.map((s, i) => <li key={i}>{s}</li>)}
+                    <ul className="text-stone-300 space-y-2">
+                        {analysis.copingStrategies!.map((s, i) => (
+                            <li key={i} className="flex items-start gap-3 anim-fade-up" style={{ animationDelay: `${i * 50}ms` }}>
+                                <span className="dot mt-1.5" />
+                                <span>{s}</span>
+                            </li>
+                        ))}
                     </ul>
                 </div>
             )}
@@ -113,8 +123,13 @@ const Analysis: React.FC<AnalysisProps> = ({ analysis }) => {
             {(analysis.suggestions?.length ?? 0) > 0 && (
                 <div className="card p-5 sm:p-6">
                     <h4 className="section-title">Reflection prompts</h4>
-                    <ul className="text-stone-300 space-y-1 list-disc pl-6">
-                        {analysis.suggestions.map((s, i) => <li key={i}>{s}</li>)}
+                    <ul className="text-stone-300 space-y-2">
+                        {analysis.suggestions.map((s, i) => (
+                            <li key={i} className="flex items-start gap-3 anim-fade-up" style={{ animationDelay: `${i * 50}ms` }}>
+                                <span className="dot mt-1.5" />
+                                <span>{s}</span>
+                            </li>
+                        ))}
                     </ul>
                 </div>
             )}

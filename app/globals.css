@@ -245,6 +245,7 @@ input {
   pointer-events: none;
   z-index: 0;
 }
+
 .aurora {
   position: absolute;
   width: 70vmax;
@@ -253,14 +254,30 @@ input {
   opacity: .18;
   border-radius: 50%;
   background: radial-gradient(circle at 30% 30%, color-mix(in oklab, var(--accent) 50%, transparent), transparent 60%),
-              radial-gradient(circle at 70% 60%, color-mix(in oklab, var(--accent-2) 45%, transparent), transparent 55%);
+    radial-gradient(circle at 70% 60%, color-mix(in oklab, var(--accent-2) 45%, transparent), transparent 55%);
   animation: floaty 18s ease-in-out infinite alternate;
 }
-.aurora.a2 { left: 60%; top: 10%; animation-duration: 22s; opacity: .14; }
-.aurora.a1 { left: -10%; top: 40%; }
+
+.aurora.a2 {
+  left: 60%;
+  top: 10%;
+  animation-duration: 22s;
+  opacity: .14;
+}
+
+.aurora.a1 {
+  left: -10%;
+  top: 40%;
+}
+
 @keyframes floaty {
-  0% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
-  100% { transform: translate3d(6%, -4%, 0) rotate(8deg) scale(1.08); }
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+  }
+
+  100% {
+    transform: translate3d(6%, -4%, 0) rotate(8deg) scale(1.08);
+  }
 }
 
 .card {
@@ -276,20 +293,26 @@ input {
 }
 
 .chip {
-  padding: 0.25rem 0.625rem; /* py-1 px-2.5 */
-  font-size: 0.75rem; /* text-xs */
+  padding: 0.25rem 0.625rem;
+  /* py-1 px-2.5 */
+  font-size: 0.75rem;
+  /* text-xs */
   line-height: 1rem;
   border-radius: 9999px;
-  background: #1f2937; /* stone-800 */
-  border: 1px solid #374151; /* stone-700 */
-  color: #d1d5db; /* stone-300 */
+  background: #1f2937;
+  /* stone-800 */
+  border: 1px solid #374151;
+  /* stone-700 */
+  color: #d1d5db;
+  /* stone-300 */
 }
 
 .section-title {
   font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: #a8a29e; /* stone-400 */
+  color: #a8a29e;
+  /* stone-400 */
   margin-bottom: 0.5rem;
 }
 
@@ -298,15 +321,70 @@ input {
   background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--accent) 50%, transparent), color-mix(in oklab, var(--accent-2) 45%, transparent), transparent);
   opacity: .35;
 }
+
 .bar-track {
   height: 0.5rem;
   width: 100%;
-  background: #1f2937; /* stone-800 */
+  background: #1f2937;
+  /* stone-800 */
   border-radius: 0.5rem;
   overflow: hidden;
 }
+
 .bar-fill {
   height: 100%;
   background: linear-gradient(90deg, var(--accent), var(--accent-2));
   box-shadow: 0 0 12px color-mix(in oklab, var(--accent) 40%, transparent);
+}
+
+/* ============ Micro animations ============ */
+@keyframes fade-up {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0) scale(0.98);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.anim-fade-up {
+  animation: fade-up .5s ease forwards;
+  will-change: transform, opacity;
+}
+
+/* ============ Option rows ============ */
+.option {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .5rem .75rem;
+  border-radius: .6rem;
+  border: 1px solid rgba(255, 255, 255, .08);
+  background: rgba(10, 10, 18, .35);
+  transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+}
+
+.option:hover {
+  border-color: color-mix(in oklab, var(--accent) 50%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 20%, transparent);
+  transform: translateZ(0) scale(1.01);
+}
+
+.option.selected {
+  border-color: color-mix(in oklab, var(--accent-2) 50%, transparent);
+  background: rgba(10, 10, 18, .55);
+  box-shadow: 0 0 18px -6px color-mix(in oklab, var(--accent-2) 40%, transparent);
+}
+
+/* ============ Gradient dot for lists ============ */
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  box-shadow: 0 0 12px color-mix(in oklab, var(--accent) 50%, transparent);
+  flex: 0 0 auto;
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { ClarifyingQuestion, QAEntry } from '@/lib/types';
 import { getClarifyingQuestions } from '@/lib/ai';
 
@@ -16,6 +16,12 @@ const Clarify: React.FC<ClarifyProps> = ({ description, onDone }) => {
 
     useEffect(() => {
         let mounted = true;
+        // reset state on description change
+        setLoading(true);
+        setQuestions([]);
+        setAnswers({});
+    // allow auto-complete to trigger again for a new description
+    autoDoneRef.current = false;
         (async () => {
             try {
                 const qs = await getClarifyingQuestions(description);
@@ -26,6 +32,15 @@ const Clarify: React.FC<ClarifyProps> = ({ description, onDone }) => {
         })();
         return () => { mounted = false; };
     }, [description]);
+
+    // If no questions are needed, signal completion AFTER render using an effect
+    const autoDoneRef = useRef(false);
+    useEffect(() => {
+        if (!loading && questions.length === 0 && !autoDoneRef.current) {
+            autoDoneRef.current = true;
+            onDone([]);
+        }
+    }, [loading, questions, onDone]);
 
     const handleSubmit = () => {
         const qa: QAEntry[] = questions
@@ -58,60 +73,61 @@ const Clarify: React.FC<ClarifyProps> = ({ description, onDone }) => {
     }
 
     if (questions.length === 0) {
-        // No questions needed; continue
-        onDone([]);
+        // No questions needed; render nothing (onDone handled via effect)
         return null;
     }
 
     return (
-        <div className="w-full max-w-2xl space-y-4">
-            <div className="text-left">
+        <div className="w-full max-w-2xl space-y-5 mx-auto text-center anim-fade-up">
+            <div>
                 <h3 className="text-xl font-semibold neon-text">Quick clarifications</h3>
                 <p className="text-stone-400 text-sm">Answer what you like; skip anything. This helps tailor the interpretation and scene.</p>
             </div>
 
-            {questions.map((q) => (
-                <div key={q.id} className="card p-4">
-                    <label className="block text-stone-200 font-medium mb-2">{q.question}</label>
-                    {Array.isArray(q.choices) && q.choices.length > 0 ? (
-                        <div className="space-y-2">
-                            {q.choices.map((opt, idx) => (
-                                <label key={idx} className="flex items-center gap-2 text-stone-300">
-                                    {q.multi ? (
-                                        <input
-                                            type="checkbox"
-                                            className="accent-violet-500"
-                                            checked={Array.isArray(answers[q.id]) ? (answers[q.id] as string[]).includes(opt) : false}
-                                            onChange={() => toggleMultiChoice(q.id, opt)}
-                                        />
-                                    ) : (
-                                        <input
-                                            type="radio"
-                                            name={q.id}
-                                            className="accent-violet-500"
-                                            checked={answers[q.id] === opt}
-                                            onChange={() => setAnswers(a => ({ ...a, [q.id]: opt }))}
-                                        />
-                                    )}
-                                    <span>{opt}</span>
-                                </label>
-                            ))}
-                        </div>
-                    ) : (
-                        <textarea
-                            className="w-full h-20 p-3 text-stone-100 glass-input rounded-lg focus:outline-none accent-ring resize-none"
-                            placeholder="Type your answer (optional)"
-                            value={(typeof answers[q.id] === 'string' ? (answers[q.id] as string) : '')}
-                            onChange={(e) => setAnswers(a => ({ ...a, [q.id]: e.target.value }))}
-                        />
-                    )}
-                    {q.rationale && (
-                        <p className="mt-2 text-xs text-stone-500">Why this helps: {q.rationale}</p>
-                    )}
-                </div>
-            ))}
+            <div className="space-y-4">
+                {questions.map((q, idx) => (
+                    <div key={q.id} className="card p-5 anim-fade-up" style={{ animationDelay: `${idx * 70}ms` }}>
+                        <label className="block text-stone-200 font-medium mb-3">{q.question}</label>
+                        {Array.isArray(q.choices) && q.choices.length > 0 ? (
+                            <div className="space-y-2 text-left">
+                                {q.choices.map((opt, idx) => (
+                                    <label key={idx} className={`option text-stone-300 ${q.multi ? (Array.isArray(answers[q.id]) && (answers[q.id] as string[]).includes(opt) ? 'selected' : '') : (answers[q.id] === opt ? 'selected' : '')}`}>
+                                        {q.multi ? (
+                                            <input
+                                                type="checkbox"
+                                                className="accent-violet-500"
+                                                checked={Array.isArray(answers[q.id]) ? (answers[q.id] as string[]).includes(opt) : false}
+                                                onChange={() => toggleMultiChoice(q.id, opt)}
+                                            />
+                                        ) : (
+                                            <input
+                                                type="radio"
+                                                name={q.id}
+                                                className="accent-violet-500"
+                                                checked={answers[q.id] === opt}
+                                                onChange={() => setAnswers(a => ({ ...a, [q.id]: opt }))}
+                                            />
+                                        )}
+                                        <span>{opt}</span>
+                                    </label>
+                                ))}
+                            </div>
+                        ) : (
+                            <textarea
+                                className="w-full h-20 p-3 text-stone-100 glass-input rounded-lg focus:outline-none accent-ring resize-none"
+                                placeholder="Type your answer (optional)"
+                                value={(typeof answers[q.id] === 'string' ? (answers[q.id] as string) : '')}
+                                onChange={(e) => setAnswers(a => ({ ...a, [q.id]: e.target.value }))}
+                            />
+                        )}
+                        {q.rationale && (
+                            <p className="mt-2 text-xs text-stone-500">Why this helps: {q.rationale}</p>
+                        )}
+                    </div>
+                ))}
+            </div>
 
-            <div className="flex gap-3">
+            <div className="flex gap-3 justify-center">
                 <button onClick={handleSubmit} className="px-5 py-2 btn-primary neon-border rounded-md">Continue</button>
                 <button onClick={() => onDone([])} className="px-5 py-2 bg-stone-800 border border-stone-700 rounded-md text-stone-200">Skip</button>
             </div>

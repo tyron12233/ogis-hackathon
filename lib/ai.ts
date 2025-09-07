@@ -208,7 +208,7 @@ Dream: ${JSON.stringify(description)}`;
     const parsed = tryParseJson<ClarifyingQuestion[]>(raw);
     if (!parsed) return [];
     return parsed.slice(0, 3).map((q, i) => ({
-        id: q.id ?? `q${i+1}`,
+        id: q.id ?? `q${i + 1}`,
         question: q.question,
         rationale: q.rationale,
         choices: Array.isArray(q.choices) ? q.choices.slice(0, 8) : undefined,
@@ -220,7 +220,7 @@ Dream: ${JSON.stringify(description)}`;
  * Analyze the dream with the Q&A transcript and return structured insights.
  */
 export const analyzeDream = async (description: string, transcript: QAEntry[]): Promise<DreamAnalysis> => {
-        const prompt = `You're an evidence-based, trauma-informed dream analyst. Combine symbolic, cognitive, cultural, and emotional perspectives.
+    const prompt = `You're an evidence-based, trauma-informed dream analyst. Combine symbolic, cognitive, cultural, and emotional perspectives.
 Given a user's dream description and optional Q&A transcript, produce a structured JSON with:
 {
     "summary": string, // concise overview in 2-3 sentences
