@@ -2,7 +2,14 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+First, set your Gemini API key in an environment file (client-side):
+
+```bash
+cp .env.example .env.local
+echo "NEXT_PUBLIC_GOOGLE_API_KEY=your_api_key_here" >> .env.local
+```
+
+Then, run the development server:
 
 ```bash
 npm run dev

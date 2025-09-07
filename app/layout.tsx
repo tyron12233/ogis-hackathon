@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Orbitron } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -9,6 +10,11 @@ const geistSans = Geist({
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+const orbitron = Orbitron({
+  variable: "--font-orbitron",
   subsets: ["latin"],
 });
 
@@ -24,10 +30,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`${geistSans.variable} ${geistMono.variable} ${orbitron.variable} antialiased bm-root`}>
+        {/* Ambient UI overlays */}
+        <div className="bm-grid" />
+        <div className="bm-scanlines" />
+        <div className="bm-noise" />
+        <div className="bm-vignette" />
+        {/* Surreal aurora blobs */}
+        <div className="aurora-wrap">
+          <div className="aurora a1" />
+          <div className="aurora a2" />
+        </div>
+        <div className="relative z-10">{children}</div>
       </body>
     </html>
   );
